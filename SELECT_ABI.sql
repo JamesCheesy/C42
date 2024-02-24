@@ -1,6 +1,6 @@
 -- nO REQUETE: 1
 -- ENONCE: Donner la liste de tous les joueurs en presentant: alias, courriel, date d'inscription.
---AUTEUR:
+--AUTEUR:Abigail Palma E.
 -- FONCTIONNELLE: OUI
 
 
