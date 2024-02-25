@@ -8,7 +8,6 @@ DROP TABLE IF EXISTS jeu;
 DROP TABLE IF EXISTS habilete;
 DROP TABLE IF EXISTS item;
 
-CREATE TYPE genre1 AS ENUM ('h', 'f', 'x');
 
 CREATE TABLE item (
 	sigle			CHAR(4)				PRIMARY KEY,
@@ -89,19 +88,21 @@ CREATE TABLE avatar (
 );
 
 CREATE TABLE capsule(
-	id				SERIAL 				PRIMARY KEY,
+	id			SERIAL 				PRIMARY KEY,
+	activiteCap		INTEGER				NOT NULL,
 	login			TIMESTAMP			NOT NULL,
 	logout			TIMESTAMP 			NOT NULL,
 	intervalCap		BIGINT				DEFAULT NULL,
-	jeu				CHAR(6)				NOT NULL,
+	jeu			CHAR(6)				NOT NULL,
+	avatar			INTEGER				NOT NULL,
 	
 	CONSTRAINT uc_jeu_capsule			UNIQUE (jeu)
 );
 
 CREATE TABLE activite (
-	id				SERIAL	 			PRIMARY KEY,		
+	id			SERIAL	 			PRIMARY KEY,
+	joueur			VARCHAR(32)			NOT NULL,
 	date_debut		DATE	 			DEFAULT CURRENT_DATE,
-	capsules		INTEGER[],
 	duree_act		BIGINT				DEFAULT NULL,
 	
 	CONSTRAINT cc_duree 				CHECK(duree_act>0)
@@ -115,21 +116,33 @@ CREATE TABLE joueur(
 	inscription		DATE				DEFAULT CURRENT_DATE,
 	naissance		DATE				NOT NULL,
 	activite 		INTEGER[],
-	avatars			INTEGER[],
+	avatar1			INTEGER,
+	avatar2			INTEGER,
+	avatar3			INTEGER,
 	
-	CONSTRAINT uc_email					UNIQUE(courriel),
+	CONSTRAINT uc_email				UNIQUE(courriel),
 	CONSTRAINT cc_naissance				CHECK( naissance > DATE '1900-01-01' ),
 	CONSTRAINT cc_inscription2			CHECK(inscription > naissance + INTERVAL'13 YEARS'),
-	CONSTRAINT cc_inscription			CHECK( inscription >= DATE '2020-01-01')
+	CONSTRAINT cc_inscription			CHECK( inscription >= DATE '2020-01-01'),
+	CONSTRAINT cc_courriel 		CHECK( courriel ~'^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
 
 
-ALTER TABLE item 				ADD CONSTRAINT fk_item_jeu 		FOREIGN KEY (jeu) REFERENCES jeu(sigle)
+ALTER TABLE item 				
+	ADD CONSTRAINT fk_item_jeu 	FOREIGN KEY (jeu) REFERENCES jeu(sigle)
 																ON DELETE CASCADE ON UPDATE SET NULL;
-ALTER TABLE habilete 			ADD CONSTRAINT fk_habilete_jeu 	FOREIGN KEY (jeu) REFERENCES jeu(sigle)
+ALTER TABLE habilete 			
+	ADD CONSTRAINT fk_habilete_jeu 	FOREIGN KEY (jeu) REFERENCES jeu(sigle)
 																ON DELETE CASCADE ON UPDATE SET NULL;
-ALTER TABLE items_avatar 		ADD CONSTRAINT fk_sigle_item	FOREIGN KEY (sigle) REFERENCES item(sigle)
+ALTER TABLE items_avatar 		
+	ADD CONSTRAINT fk_sigle_item	FOREIGN KEY (sigle) REFERENCES item(sigle)
 																ON DELETE CASCADE ON UPDATE SET NULL;
-ALTER TABLE habiletes_avatar	ADD CONSTRAINT fk_sigle_habil	FOREIGN KEY (sigle) REFERENCES habilete(sigle)
-																ON DELETE CASCADE ON UPDATE SET NULL;
+ALTER TABLE habiletes_avatar	
+	ADD CONSTRAINT fk_sigle_habil	FOREIGN KEY (sigle) REFERENCES habilete(sigle)
+															ON DELETE CASCADE ON UPDATE SET NULL;
+ALTER TABLE activite
+	ADD CONSTRAINT fk_act_joueur FOREIGN KEY (joueur) REFERENCES joueur(alias) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE capsule 
+	ADD CONSTRAINT fk_cap_act FOREIGN KEY (activiteCap) REFERENCES activite(id)  ON DELETE SET NULL ON UPDATE CASCADE;
