@@ -1,3 +1,7 @@
+ALTER TABLE IF EXISTS item DROP CONSTRAINT fk_item_jeu;
+ALTER TABLE IF EXISTS habilete DROP CONSTRAINT fk_habilete_jeu;
+ALTER TABLE IF EXISTS items_avatar DROP CONSTRAINT fk_sigle_item;
+ALTER TABLE IF EXISTS habiletes_avatar DROP CONSTRAINT fk_sigle_habil;
 ALTER TABLE IF EXISTS activite DROP CONSTRAINT fk_act_joueur;
 ALTER TABLE IF EXISTS capsule DROP CONSTRAINT fk_cap_act;
 
@@ -67,7 +71,7 @@ CREATE TABLE habiletes_avatar (
 
 CREATE TABLE items_avatar (
 	id 				SERIAL	 			PRIMARY KEY,
-	avatar			INTEGER			NOT NULL,
+	avatar			INTEGER				NOT NULL,
 	sigle 			CHAR(4)				NOT NULL,
 	date_obtention 	DATE 				NOT NULL DEFAULT CURRENT_DATE,
 	quantite_item	INTEGER 			NOT NULL DEFAULT 1,
@@ -131,8 +135,6 @@ CREATE TABLE joueur(
 	CONSTRAINT cc_courriel 		CHECK( courriel ~'^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
-
-
 ALTER TABLE item 				
 	ADD CONSTRAINT fk_item_jeu 	FOREIGN KEY (jeu) REFERENCES jeu(sigle)
 																ON DELETE CASCADE ON UPDATE SET NULL;
@@ -145,7 +147,6 @@ ALTER TABLE items_avatar
 ALTER TABLE habiletes_avatar	
 	ADD CONSTRAINT fk_sigle_habil	FOREIGN KEY (sigle) REFERENCES habilete(sigle)
 															ON DELETE CASCADE ON UPDATE SET NULL;
-
 ALTER TABLE activite
 	ADD CONSTRAINT fk_act_joueur FOREIGN KEY (joueur) REFERENCES joueur(alias) ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -195,7 +196,7 @@ INSERT INTO joueur
 			NULL,
 			'2023-03-08',
 			'1979-09-13',ARRAY[4],
-		3
+			3
 			);
 			
 INSERT INTO joueur
@@ -385,7 +386,9 @@ INSERT INTO avatar
 		   (2, 'Le Slayer', ARRAY['SSSSCHHHZZWOUIINNNGG'], ARRAY[[89, 43, 2], [100, 100, 100], [12, 34, 56]],
 			TO_DATE('2023/03/08', 'YYYY/MM/DD'),439820, ARRAY['IDDD', 'IEEE', 'IFFF', 'IGGG', 'IHHH'], ARRAY['SDD', 'SEE', 'SFF', 'SGG'], 0),
 		   (3, 'Ben Dover', ARRAY['J''ai pas vraiment le gout', 'Ca me tente plus'], ARRAY[[78,90,12], [34, 56, 78], [90, 12, 34]],
-		   TO_DATE('2021/10/19', 'YYYY/MM/DD'), 25, ARRAY['IIII', 'IJJJ'], ARRAY['SHH', 'SII', 'SJJ'], 0);
+		   TO_DATE('2021/10/19', 'YYYY/MM/DD'), 25, ARRAY['IIII', 'IJJJ'], ARRAY['SHH', 'SII', 'SJJ'], 0),
+		   (4, 'TechNinja', ARRAY['Je suis le maître du code'], ARRAY[[13, 83, 8], [43, 78, 20], [15, 38, 58]],
+			TO_DATE('2023/09/02', 'YYYY/MM/DD'),43, ARRAY['IAAA', 'IBBB', 'IDDD', 'IGGG', 'IHHH'], ARRAY['SAA', 'SBB', 'SCC', 'SDD'], 0);
 
 UPDATE avatar
  	SET couleur1 = (rgb[1][1] * 65536 + rgb[1][2] * 256 + rgb[1][3]),
@@ -402,35 +405,13 @@ INSERT INTO habiletes_avatar
 	
 INSERT INTO items_avatar
 	VALUES
-	(DEFAULT,1, 'IAAA',DEFAULT, DEFAULT),
-	(DEFAULT,1 ,'IEEE',DEFAULT, 2),
-	(DEFAULT,2 ,'ICCC',DEFAULT, DEFAULT),
-	(DEFAULT,3, 'IDDD',DEFAULT, DEFAULT),
-	(DEFAULT,1, 'IFFF',DEFAULT, 3),
-	(DEFAULT,4, 'IHHH',DEFAULT,2),
-	(DEFAULT,2 ,'IGGG',DEFAULT, DEFAULT);
+	(DEFAULT, 1, 'IAAA',DEFAULT, DEFAULT),
+	(DEFAULT, 1, 'IEEE',DEFAULT, 2),
+	(DEFAULT, 2 ,'ICCC',DEFAULT, DEFAULT),
+	(DEFAULT, 3, 'IDDD',DEFAULT, DEFAULT),
+	(DEFAULT, 1, 'IFFF',DEFAULT, 3),
+	(DEFAULT, 4, 'IHHH',DEFAULT, 2),
+	(DEFAULT, 2 ,'IGGG',DEFAULT, DEFAULT);
+	
 
--- SELECT sigle || '=[' || nom || ']' AS "Habiletés"
--- 	FROM habilete
--- 		WHERE sigle IN (SELECT sigle
--- 				FROM avatar WHERE nom LIKE '%*%')
---  --LIMIT 1
- 
--- (SELECT date_obtention AS "Date obtention" 
---         FROM habiletes_avatar
--- 			WHERE sigle IN (SELECT sigle
--- 				FROM avatar WHERE nom LIKE '%*%')
---  LIMIT 1
--- );        
 
-/*SELECT habiletes
-	FROM avatar
-		WHERE nom LIKE '%*%';
-		
-SELECT nom, prenom 
-	FROM employe 
-	WHERE ville IN (SELECT ville 
-		FROM employe 
-		WHERE departement = 'r&d'); */
-
-   
