@@ -14,3 +14,5 @@
 -- ADD COLUMN  moX2 NUMERIC DEFAULT NULL;
 -- UPDATE habilete
 -- set moX2 = ((habilete.niveau*habilete.niveau)*0.75)+(habilete.niveau*20) +10
+
+COEF CAHANGE IN THE END BROOOOO
