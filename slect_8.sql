@@ -1,29 +1,16 @@
+-- nO REQUETE: 8 BONI
+-- BUT: On désire modifier la structure de prix pour deux des items de faço à avoir les montans
+--     indiqué [dans la docs] selon le niveau associé.
+--AUTEUR:Abigail Palma E.
+-- FONCTIONNELLE: OUI
+
+-- ALTER TABLE habilete
+-- ADD COLUMN  moX1 NUMERIC DEFAULT NULL;
+-- UPDATE habilete
+-- set moX1 = (habilete.niveau*22.5) +20
 
 
--- -- ALTER TABLE items_avatar
--- -- ADD COLUMN  niv_temp INTEGER DEFAULT 1;
-
-
--- -- UPDATE items_avatar
--- -- SET niv_temp= id*10
-
--- -- ALTER TABLE item
--- -- ADD COLUMN  moX NUMERIC
-
--- UPDATE item
--- set mox = (items_avatar.niv_temp*22.5) +20
--- 	FROM items_avatar
--- 	WHERE
--- 	items_avatar.sigle = item.sigle;
-
-
-
-
--- -- ALTER TABLE item
--- -- ADD COLUMN  moX2 NUMERIC;
-
--- UPDATE item
--- set mox2 = (((items_avatar.niv_temp * items_avatar.niv_temp) * 0.75) +(20 * items_avatar.niv_temp) +10)
--- 	FROM items_avatar
--- 	WHERE
--- 	items_avatar.sigle = item.sigle
+-- ALTER TABLE habilete
+-- ADD COLUMN  moX2 NUMERIC DEFAULT NULL;
+-- UPDATE habilete
+-- set moX2 = ((habilete.niveau*habilete.niveau)*0.75)+(habilete.niveau*20) +10
