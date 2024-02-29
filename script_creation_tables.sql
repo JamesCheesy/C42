@@ -1,12 +1,19 @@
-DROP TABLE IF EXISTS joueur;
-DROP TABLE IF EXISTS activite;
-DROP TABLE IF EXISTS capsule;
-DROP TABLE IF EXISTS avatar;
-DROP TABLE IF EXISTS items_avatar;
-DROP TABLE IF EXISTS habilites_avatar;
-DROP TABLE IF EXISTS jeu;
-DROP TABLE IF EXISTS habilete;
-DROP TABLE IF EXISTS item;
+ALTER TABLE IF EXISTS item DROP CONSTRAINT fk_item_jeu;
+ALTER TABLE IF EXISTS habilete DROP CONSTRAINT fk_habilete_jeu;
+ALTER TABLE IF EXISTS items_avatar DROP CONSTRAINT fk_sigle_item;
+ALTER TABLE IF EXISTS habiletes_avatar DROP CONSTRAINT fk_sigle_habil;
+ALTER TABLE IF EXISTS activite DROP CONSTRAINT fk_act_joueur;
+ALTER TABLE IF EXISTS capsule DROP CONSTRAINT fk_cap_act;
+
+DROP TABLE IF EXISTS activite CASCADE;
+DROP TABLE IF EXISTS capsule CASCADE;
+DROP TABLE IF EXISTS joueur CASCADE;
+DROP TABLE IF EXISTS avatar CASCADE;
+DROP TABLE IF EXISTS items_avatar CASCADE;
+DROP TABLE IF EXISTS habiletes_avatar CASCADE;
+DROP TABLE IF EXISTS jeu CASCADE;
+DROP TABLE IF EXISTS habilete CASCADE;
+DROP TABLE IF EXISTS item CASCADE;
 
 
 CREATE TABLE item (
@@ -18,7 +25,7 @@ CREATE TABLE item (
 	
 	CONSTRAINT cc_item_sigle 			CHECK (sigle ~ '^I'),	
 	CONSTRAINT uc_item_nom 				UNIQUE (nom),
-	CONSTRAINT uc_jeu_item				UNIQUE (jeu),
+	
 	CONSTRAINT cc_probabilite 			CHECK (probabilite BETWEEN 0.001 AND 0.999)
 );
 
@@ -36,7 +43,6 @@ CREATE TABLE habilete (
 	
 	CONSTRAINT cc_habilete_sigle		CHECK(sigle ~ '^S'),
 	CONSTRAINT uc_habilete_nom			UNIQUE (nom),
-	CONSTRAINT uc_jeu_habil				UNIQUE(jeu),
 	CONSTRAINT cc_energie_max 			CHECK(energie_max BETWEEN 10.000 AND 1000.000),
 	CONSTRAINT cc_niveau 				CHECK(niveau BETWEEN 1 AND 100)	
 );
@@ -54,15 +60,19 @@ CREATE TABLE jeu (
 );
 
 CREATE TABLE habiletes_avatar (
-	sigle			CHAR(3)				PRIMARY KEY,
+	id 				SERIAL				PRIMARY KEY,
+	sigle			CHAR(3)				NOT NULL,
 	date_obtention	DATE				NOT NULL DEFAULT CURRENT_DATE,
-	niveau_actuel	INT					NOT NULL DEFAULT 1,
+	avatar 			INTEGER				NOT NULL,
+	niveau_actuel	INTEGER				NOT NULL DEFAULT 1,
 	
 	CONSTRAINT cc_niv_habil				CHECK (niveau_actuel BETWEEN 1 AND 100)
 );
 
 CREATE TABLE items_avatar (
-	sigle 			CHAR(4) 			PRIMARY KEY,
+	id 				SERIAL	 			PRIMARY KEY,
+	avatar			INTEGER				NOT NULL,
+	sigle 			CHAR(4)				NOT NULL,
 	date_obtention 	DATE 				NOT NULL DEFAULT CURRENT_DATE,
 	quantite_item	INTEGER 			NOT NULL DEFAULT 1,
 	
@@ -94,9 +104,7 @@ CREATE TABLE capsule(
 	logout			TIMESTAMP 			NOT NULL,
 	intervalCap		BIGINT				DEFAULT NULL,
 	jeu			CHAR(6)				NOT NULL,
-	avatar			INTEGER				NOT NULL,
-	
-	CONSTRAINT uc_jeu_capsule			UNIQUE (jeu)
+	avatar			INTEGER				NOT NULL	
 );
 
 CREATE TABLE activite (
@@ -112,7 +120,7 @@ CREATE TABLE joueur(
 	alias			VARCHAR(32) 		PRIMARY KEY,
 	courriel		VARCHAR(128)		NOT NULL,
 	mot_de_passe	VARCHAR(32)			NOT NULL,
-	genre			genre1				DEFAULT NULL,
+	genre			CHAR				DEFAULT NULL,
 	inscription		DATE				DEFAULT CURRENT_DATE,
 	naissance		DATE				NOT NULL,
 	activite 		INTEGER[],
@@ -126,8 +134,6 @@ CREATE TABLE joueur(
 	CONSTRAINT cc_inscription			CHECK( inscription >= DATE '2020-01-01'),
 	CONSTRAINT cc_courriel 		CHECK( courriel ~'^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
-
-
 
 ALTER TABLE item 				
 	ADD CONSTRAINT fk_item_jeu 	FOREIGN KEY (jeu) REFERENCES jeu(sigle)
