@@ -9,7 +9,7 @@ INSERT INTO habilete (sigle, nom, energie_max, coef1, coef2, coef3, niveau, desc
 	('SDD', 'Pouvoir de séduction', 13.333, DEFAULT, DEFAULT, DEFAULT, 1, 'Avec un sourire envoûtant et des biceps de l''enfer Daddy ensorcèle l''adversaire et le contrôle', 'DADDYY');
 	
 UPDATE habilete
-	SET cout_niveau = (coef1 * (niveau * niveau) + coef2 * niveau + coef3);
+	SET cout_niveau = ((coef1 * (niveau * niveau)) + (coef2 * niveau) + coef3);
 
 INSERT INTO item
 	VALUES('IAAA', 'Épices olé olé', 0.131, 'Elles sauront ajouter la passion enflamméee de Mama dans chaque plat.', 'MAMAAA'),
