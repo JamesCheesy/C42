@@ -2,6 +2,7 @@ ALTER TABLE IF EXISTS item DROP CONSTRAINT fk_item_jeu;
 ALTER TABLE IF EXISTS habilete DROP CONSTRAINT fk_habilete_jeu;
 ALTER TABLE IF EXISTS items_avatar DROP CONSTRAINT fk_sigle_item;
 ALTER TABLE IF EXISTS habiletes_avatar DROP CONSTRAINT fk_sigle_habil;
+ALTER TABLE IF EXISTS habiletes_avatar DROP CONSTRAINT fk_avatar_habil;
 ALTER TABLE IF EXISTS activite DROP CONSTRAINT fk_act_joueur;
 ALTER TABLE IF EXISTS capsule DROP CONSTRAINT fk_cap_act;
 
@@ -146,6 +147,9 @@ ALTER TABLE items_avatar
 																ON DELETE CASCADE ON UPDATE SET NULL;
 ALTER TABLE habiletes_avatar	
 	ADD CONSTRAINT fk_sigle_habil	FOREIGN KEY (sigle) REFERENCES habilete(sigle)
+															ON DELETE CASCADE ON UPDATE SET NULL;
+ALTER TABLE habiletes_avatar	
+	ADD CONSTRAINT fk_avatar_habil	FOREIGN KEY (avatar) REFERENCES avatar(id)
 															ON DELETE CASCADE ON UPDATE SET NULL;
 ALTER TABLE activite
 	ADD CONSTRAINT fk_act_joueur FOREIGN KEY (joueur) REFERENCES joueur(alias) ON DELETE SET NULL ON UPDATE CASCADE;
